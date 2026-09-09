@@ -1,0 +1,95 @@
+<%layout("/layouts/boilerplate")%>
+
+    <body>
+        <div id="filters">
+            <a class="filter <%= selectedCategory === 'Trending' ? 'active' : '' %>" href="/listings?category=Trending">
+                <div><i class="fa-solid fa-fire"></i></div>
+                <p>Trending</p>
+            </a>
+            <a class="filter <%= selectedCategory === 'Rooms' ? 'active' : '' %>" href="/listings?category=Rooms">
+                <div><i class="fa-solid fa-bed"></i></div>
+                <p>Rooms</p>
+            </a>
+             <a class="filter <%= selectedCategory === 'Iconic Cities' ? 'active' : '' %>" href="/listings?category=Iconic%20Cities">
+                <div><i class="fa-solid fa-mountain-city"></i></div>
+                <p>Iconic Cities</p>
+            </a>
+             <a class="filter <%= selectedCategory === 'Mountains' ? 'active' : '' %>" href="/listings?category=Mountains">
+                <div><i class="fa-solid fa-mountain"></i></div>
+                <p>Mountains</p>
+            </a>
+            <a class="filter <%= selectedCategory === 'Castles' ? 'active' : '' %>" href="/listings?category=Castles">
+                <div><i class="fa-brands fa-fort-awesome"></i></div>
+                <p>Castles</p>
+            </a>
+            <a class="filter <%= selectedCategory === 'Campings' ? 'active' : '' %>" href="/listings?category=Campings">
+                <div><i class="fa-solid fa-campground"></i></div>
+                <p>Campings</p>
+            </a>
+            <a class="filter <%= selectedCategory === 'Farms' ? 'active' : '' %>" href="/listings?category=Farms">
+                <div><i class="fa-solid fa-seedling"></i></div>
+                <p>Farms</p>
+            </a>
+            <a class="filter <%= selectedCategory === 'Arctic' ? 'active' : '' %>" href="/listings?category=Arctic">
+                <div><i class="fa-solid fa-snowflake"></i></div>
+                <p>Arctic</p>
+            </a>
+             <a class="filter <%= selectedCategory === 'Boats' ? 'active' : '' %>" href="/listings?category=Boats">
+                <div><i class="fa-solid fa-ship"></i></div>
+                <p>Boats</p>
+            </a>
+             
+<div class="tax-toggle">
+    <div class="form-check-reverse form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+  <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
+</div>
+</div>
+        </div>
+
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+            <% if (!allListings.length) { %>
+                <div class="col-12"><p class="text-muted">No listings match your search.</p></div>
+            <% } %>
+            <% for(let listing of allListings) { %>
+
+                <div class="col">
+                    <a href="/listings/<%= listing._id %>" class="listing-link">
+
+                        <div class="card listing-card">
+
+                            <img src="<%= listing.image.url %>" class="card-img-top" alt="Listing Image"
+                                style="height: 20rem;">
+                            <div class="card-img-overlay"></div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <b>
+                                        <%= listing.title %>
+                                    </b>
+                                    <br>
+                                    &#8377;<%= listing.price.toLocaleString("en-IN")%> /night
+                                    <i class="tax-info"> +18% GST</i>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </a>
+                </div>
+
+                <% } %>
+        </div>
+<script>
+    let taxSwitch = document.getElementById("switchCheckDefault");
+    taxSwitch.addEventListener("click",()=>{
+      let taxInfo = document.getElementsByClassName("tax-info");
+      for(info of taxInfo){
+        if(info.style.display != "inline"){
+            info.style.display = "inline";
+        }else{
+             info.style.display = "none";
+        }
+      }
+    });
+</script>
+    </body>
