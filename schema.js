@@ -2,14 +2,13 @@
 const Joi = require("joi");
 
 module.exports.listingSchema = Joi.object({
-    title: Joi.string().required(),
-    description: Joi.string().required(),
-    price: Joi.number().required().min(0),
-    location: Joi.string().required(),
-    country: Joi.string().required(),
-    category: Joi.string().valid("Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Campings", "Farms", "Arctic", "Boats").required(),
-    image: Joi.any().optional()
-}).required().messages({
+    title: Joi.string().trim().min(3).max(100).required(),
+    description: Joi.string().trim().min(10).max(2000).required(),
+    price: Joi.number().min(0).required(),
+    location: Joi.string().trim().min(2).max(100).required(),
+    country: Joi.string().trim().min(2).max(100).required(),
+    category: Joi.string().valid("Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Campings", "Farms", "Arctic", "Boats").required()
+}).required().unknown(false).messages({
     "any.required": "Listing data is required"
 });;
 

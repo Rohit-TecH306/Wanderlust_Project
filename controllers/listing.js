@@ -31,7 +31,8 @@ module.exports.createListing = async (req, res, next) => {
         return res.redirect("/listings/new");
     }
 
-    const searchQuery = encodeURIComponent(`${req.body.location}, ${req.body.country}`);
+    const { location, country } = req.validatedListing;
+    const searchQuery = encodeURIComponent(`${location}, ${country}`);
     const geocodingResponse = await fetch(
         `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${searchQuery}`,
         {
@@ -56,7 +57,7 @@ module.exports.createListing = async (req, res, next) => {
 
     let url = req.file.path;
     let filename = req.file.filename;
-    const newListing = new Listing(req.body);
+    const newListing = new Listing(req.validatedListing);
     newListing.owner = req.user._id;
     newListing.image = { url, filename };
     newListing.geometry = {
@@ -105,12 +106,13 @@ module.exports.updateListing = async (req, res) => {
         return res.redirect("/listings");
     }
 
+    const { location, country } = req.validatedListing;
     const locationChanged =
-        listing.location !== req.body.location ||
-        listing.country !== req.body.country;
+        listing.location !== location ||
+        listing.country !== country;
 
     if (locationChanged) {
-        const searchQuery = encodeURIComponent(`${req.body.location}, ${req.body.country}`);
+        const searchQuery = encodeURIComponent(`${location}, ${country}`);
         const geocodingResponse = await fetch(
             `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${searchQuery}`,
             {
@@ -139,7 +141,7 @@ module.exports.updateListing = async (req, res) => {
         };
     }
 
-    Object.assign(listing, req.body);
+    Object.assign(listing, req.validatedListing);
 
     if (typeof req.file !== "undefined") {
         listing.image = {

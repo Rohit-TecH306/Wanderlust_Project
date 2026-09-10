@@ -32,11 +32,12 @@ const isOwner = async (req,res,next)=>{
 }
 
 const validateListing = (req, res, next) => {
-    let { error } = listingSchema.validate(req.body || {}, { abortEarly: false });
+    let { error, value } = listingSchema.validate(req.body || {}, { abortEarly: false });
     if (error) {
         let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400, errMsg);
     }
+    req.validatedListing = value;
     next();
 };
 
