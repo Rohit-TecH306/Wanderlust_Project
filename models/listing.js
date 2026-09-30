@@ -14,6 +14,17 @@ const listingSchema = new schema({
         filename : String,
     },
     price: Number,
+    maxGuests: {
+        type: Number,
+        required: true,
+        default: 1,
+        min: 1,
+        max: 50,
+        validate: {
+            validator: Number.isInteger,
+            message: "Maximum guests must be a whole number.",
+        },
+    },
     location: String,
     country: String,
     category: {

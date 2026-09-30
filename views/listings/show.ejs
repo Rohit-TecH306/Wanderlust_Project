@@ -21,6 +21,7 @@
                     <%=listing.description%>
                 </p>
                 <p class="card-text">&#8377;<%=listing.price.toLocaleString("en-IN")%></p>
+                <p class="card-text">Up to <%= listing.maxGuests || 1 %> guest<%= (listing.maxGuests || 1) === 1 ? "" : "s" %></p>
                 <p class="card-text">
                     <%=listing.location%><br>
                 </p>
