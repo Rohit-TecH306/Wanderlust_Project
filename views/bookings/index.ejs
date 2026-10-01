@@ -1,0 +1,34 @@
+<% layout("../layouts/boilerplate") %>
+
+<div class="row mt-4">
+    <div class="col-md-10 offset-md-1">
+        <h2>My Bookings</h2>
+
+        <% if (bookings.length === 0) { %>
+            <p class="text-muted mt-3">You have not sent any booking requests yet.</p>
+            <a href="/listings" class="btn btn-dark">Explore listings</a>
+        <% } else { %>
+            <div class="row row-cols-1 row-cols-md-2 g-4 mt-1">
+                <% bookings.forEach(booking => { %>
+                    <div class="col">
+                        <div class="card h-100">
+                            <% if (booking.listing && booking.listing.image && booking.listing.image.url) { %>
+                                <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="<%= booking.listing.title %>">
+                            <% } %>
+                            <div class="card-body">
+                                <h5 class="card-title"><%= booking.listing ? booking.listing.title : "Listing no longer available" %></h5>
+                                <% if (booking.listing) { %>
+                                    <p class="card-text text-muted"><%= booking.listing.location %>, <%= booking.listing.country %></p>
+                                <% } %>
+                                <p class="card-text mb-1"><strong>Dates:</strong> <%= booking.checkIn.toLocaleDateString("en-IN") %> – <%= booking.checkOut.toLocaleDateString("en-IN") %></p>
+                                <p class="card-text mb-1"><strong>Guests:</strong> <%= booking.guests %> &middot; <strong>Nights:</strong> <%= booking.nights %></p>
+                                <p class="card-text mb-2"><strong>Total:</strong> ₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></p>
+                                <span class="badge text-bg-<%= booking.status === "confirmed" ? "success" : booking.status === "pending" ? "warning" : booking.status === "rejected" ? "danger" : "secondary" %>"><%= booking.status %></span>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+</div>

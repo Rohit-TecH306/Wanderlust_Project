@@ -70,3 +70,11 @@ module.exports.createBooking = async (req, res) => {
   req.flash("success", "Booking request sent to the host.");
   res.redirect(`/listings/${listing._id}`);
 };
+
+module.exports.renderMyBookings = async (req, res) => {
+  const bookings = await Booking.find({ guest: req.user._id })
+    .populate("listing", "title image location country")
+    .sort({ createdAt: -1 });
+
+  res.render("bookings/index.ejs", { bookings });
+};
