@@ -30,7 +30,13 @@
                                 <% badgeClass = "danger"; %>
                             <% } %>
                             <tr>
-                                <td><%= booking.listing.title %></td>
+                                <td>
+                                    <% if (booking.listing) { %>
+                                        <%= booking.listing.title %>
+                                    <% } else { %>
+                                        Listing no longer available
+                                    <% } %>
+                                </td>
                                 <td><%= booking.guest ? booking.guest.username : "Guest account unavailable" %></td>
                                 <td>
                                     <%= booking.checkIn.toLocaleDateString("en-IN") %> – <%= booking.checkOut.toLocaleDateString("en-IN") %><br>
