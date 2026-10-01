@@ -21,6 +21,7 @@ const listingsRouter = require("./routes/listing.js");
 const reviewsRouter = require("./routes/review.js");
 const bookingsRouter = require("./routes/booking.js");
 const userBookingsRouter = require("./routes/userBooking.js");
+const hostBookingsRouter = require("./routes/hostBooking.js");
 const userRouter = require("./routes/user.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -124,6 +125,7 @@ app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/listings/:id/bookings", bookingsRouter);
 app.use("/bookings", userBookingsRouter);
+app.use("/host/bookings", hostBookingsRouter);
 app.use("/", userRouter);
 
 // The route which we have not creted or nothing for tha :-
