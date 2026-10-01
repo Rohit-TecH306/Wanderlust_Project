@@ -78,3 +78,52 @@ module.exports.renderMyBookings = async (req, res) => {
 
   res.render("bookings/index.ejs", { bookings });
 };
+
+module.exports.renderHostBookings = async (req, res) => {
+  const listings = await Listing.find({ owner: req.user._id }).select("_id");
+  const listingIds = listings.map((listing) => listing._id);
+
+  const bookings = await Booking.find({ listing: { $in: listingIds } })
+    .populate("listing", "title location country")
+    .populate("guest", "username")
+    .sort({ createdAt: -1 });
+
+  res.render("bookings/host.ejs", { bookings });
+};
+
+module.exports.updateBookingStatus = async (req, res) => {
+  const booking = await Booking.findById(req.params.id).populate("listing", "owner title");
+  if (!booking) {
+    throw new ExpressError(404, "Booking not found.");
+  }
+
+  if (!booking.listing || !booking.listing.owner.equals(req.user._id)) {
+    throw new ExpressError(403, "You can only manage bookings for your own listings.");
+  }
+
+  if (booking.status !== "pending") {
+    throw new ExpressError(400, "Only pending booking requests can be updated.");
+  }
+
+  const newStatus = req.validatedBookingStatus;
+  if (newStatus === "confirmed") {
+    const hasConfirmedConflict = await Booking.exists({
+      listing: booking.listing._id,
+      status: "confirmed",
+      _id: { $ne: booking._id },
+      checkIn: { $lt: booking.checkOut },
+      checkOut: { $gt: booking.checkIn },
+    });
+
+    if (hasConfirmedConflict) {
+      throw new ExpressError(409, "These dates conflict with an existing confirmed booking.");
+    }
+  }
+
+  booking.status = newStatus;
+  booking.statusUpdatedAt = new Date();
+  await booking.save();
+
+  req.flash("success", `Booking request ${newStatus}.`);
+  res.redirect("/host/bookings");
+};

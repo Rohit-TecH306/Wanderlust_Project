@@ -32,3 +32,9 @@ module.exports.bookingSchema = Joi.object({
         guestMessage: Joi.string().trim().max(500).allow("").optional()
     }).required().unknown(false)
 }).required().unknown(false);
+
+module.exports.bookingStatusSchema = Joi.object({
+    booking: Joi.object({
+        status: Joi.string().valid("confirmed", "rejected").required()
+    }).required().unknown(false)
+}).required().unknown(false);

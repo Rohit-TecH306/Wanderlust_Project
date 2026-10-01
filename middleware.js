@@ -1,5 +1,5 @@
 const Listing = require("./models/listing");
-const { listingSchema, ReviewSchema, bookingSchema } = require("./schema.js");
+const { listingSchema, ReviewSchema, bookingSchema, bookingStatusSchema } = require("./schema.js");
 const ExpressError = require("./utils/ExpressError.js");
 const Review = require("./models/review.js");
 
@@ -62,6 +62,17 @@ const validateBooking = (req, res, next) => {
   next();
 };
 
+const validateBookingStatus = (req, res, next) => {
+  const { error, value } = bookingStatusSchema.validate(req.body || {}, { abortEarly: false });
+  if (error) {
+    const errMsg = error.details.map((el) => el.message).join(", ");
+    throw new ExpressError(400, errMsg);
+  }
+
+  req.validatedBookingStatus = value.booking.status;
+  next();
+};
+
 const isReviewAuthor = async (req,res,next)=>{
   let { id ,reviewId} = req.params;
       let review = await Review.findById(reviewId);
@@ -72,4 +83,4 @@ const isReviewAuthor = async (req,res,next)=>{
       next();
 }
 
-module.exports = { isLoggedIn, saveRedirectUrl, isOwner, validateListing, validateReview, validateBooking, isReviewAuthor };
+module.exports = { isLoggedIn, saveRedirectUrl, isOwner, validateListing, validateReview, validateBooking, validateBookingStatus, isReviewAuthor };
