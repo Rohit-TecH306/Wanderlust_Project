@@ -127,6 +127,7 @@ app.use("/listings/:id/bookings", bookingsRouter);
 app.use("/bookings", userBookingsRouter);
 app.use("/host/bookings", hostBookingsRouter);
 app.use("/", userRouter);
+app.get("/", wrapAsync(listingController.index));
 
 // The route which we have not creted or nothing for tha :-
 app.use((req, res, next) => {
