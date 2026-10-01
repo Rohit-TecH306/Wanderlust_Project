@@ -1,6 +1,7 @@
 const Booking = require("../models/booking.js");
 const Listing = require("../models/listing.js");
 const ExpressError = require("../utils/ExpressError.js");
+const mongoose = require("mongoose");
 
 const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 
@@ -77,6 +78,37 @@ module.exports.renderMyBookings = async (req, res) => {
     .sort({ createdAt: -1 });
 
   res.render("bookings/index.ejs", { bookings });
+};
+
+module.exports.cancelBooking = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    throw new ExpressError(404, "Booking not found.");
+  }
+
+  const booking = await Booking.findById(id);
+  if (!booking) {
+    throw new ExpressError(404, "Booking not found.");
+  }
+
+  if (!booking.guest || !booking.guest.equals(req.user._id)) {
+    throw new ExpressError(403, "You can only cancel your own bookings.");
+  }
+
+  if (!["pending", "confirmed"].includes(booking.status)) {
+    throw new ExpressError(400, "Only pending or confirmed bookings can be cancelled.");
+  }
+
+  if (booking.checkIn <= startOfTodayUtc()) {
+    throw new ExpressError(400, "A booking cannot be cancelled on or after its check-in date.");
+  }
+
+  booking.status = "cancelled";
+  booking.statusUpdatedAt = new Date();
+  await booking.save();
+
+  req.flash("success", "Booking cancelled successfully.");
+  res.redirect("/bookings");
 };
 
 module.exports.renderHostBookings = async (req, res) => {

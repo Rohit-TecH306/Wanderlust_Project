@@ -21,6 +21,14 @@
                     </thead>
                     <tbody>
                         <% bookings.forEach(booking => { %>
+                            <% let badgeClass = "secondary"; %>
+                            <% if (booking.status === "confirmed") { %>
+                                <% badgeClass = "success"; %>
+                            <% } else if (booking.status === "pending") { %>
+                                <% badgeClass = "warning"; %>
+                            <% } else if (booking.status === "rejected") { %>
+                                <% badgeClass = "danger"; %>
+                            <% } %>
                             <tr>
                                 <td><%= booking.listing.title %></td>
                                 <td><%= booking.guest ? booking.guest.username : "Guest account unavailable" %></td>
@@ -29,7 +37,7 @@
                                     <small class="text-muted"><%= booking.guests %> guests · <%= booking.nights %> nights</small>
                                 </td>
                                 <td>₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></td>
-                                <td><span class="badge text-bg-<%= booking.status === "confirmed" ? "success" : booking.status === "pending" ? "warning" : booking.status === "rejected" ? "danger" : "secondary" %>"><%= booking.status %></span></td>
+                                <td><span class="badge text-bg-<%= badgeClass %>"><%= booking.status %></span></td>
                                 <td>
                                     <% if (booking.status === "pending") { %>
                                         <div class="d-flex gap-2">
