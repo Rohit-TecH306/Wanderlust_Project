@@ -171,6 +171,15 @@ body {
     object-fit: cover !important;
 }
 
+.listing-image-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 12rem;
+    color: #6b7280;
+    background-color: #f3f4f6;
+}
+
 .card-body {
     padding: 0 !important;
 }
@@ -224,4 +233,44 @@ body {
 
 .listing-map-section {
     box-sizing: border-box;
+}
+
+/* Booking pages */
+.booking-card-column .card {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.booking-card-column .card-img-top {
+    height: 12rem;
+}
+
+.booking-card-body {
+    padding: 1.25rem !important;
+}
+
+.booking-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.booking-status-code {
+    color: #6b7280;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.booking-action-form {
+    margin-top: 0.75rem;
+}
+
+@media (max-width: 575px) {
+    .booking-status-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 }

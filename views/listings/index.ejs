@@ -58,8 +58,14 @@
 
                         <div class="card listing-card">
 
-                            <img src="<%= listing.image.url %>" class="card-img-top" alt="Listing Image"
-                                style="height: 20rem;">
+                            <% if (listing.image && listing.image.url) { %>
+                                <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>"
+                                    loading="lazy" decoding="async" style="height: 20rem;">
+                            <% } else { %>
+                                <div class="card-img-top listing-image-fallback" role="img" aria-label="No image available for <%= listing.title %>">
+                                    No image available
+                                </div>
+                            <% } %>
                             <div class="card-img-overlay"></div>
                             <div class="card-body">
                                 <p class="card-text">

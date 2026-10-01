@@ -6,7 +6,13 @@
             </h3>
         </div>
         <div class="card col-6 offset-3 show-card listing-card">
-            <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="Listing Image">
+            <% if (listing.image && listing.image.url) { %>
+                <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="<%= listing.title %>">
+            <% } else { %>
+                <div class="card-img-top show-img listing-image-fallback" role="img" aria-label="No image available for <%= listing.title %>">
+                    No image available
+                </div>
+            <% } %>
             <div class="card-body">
                 <h5 class="card-title"></h5>
 

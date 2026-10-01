@@ -22,12 +22,20 @@
                     <tbody>
                         <% bookings.forEach(booking => { %>
                             <% let badgeClass = "secondary"; %>
+                            <% let statusLabel = "Booking status"; %>
                             <% if (booking.status === "confirmed") { %>
                                 <% badgeClass = "success"; %>
+                                <% statusLabel = "Confirmed"; %>
                             <% } else if (booking.status === "pending") { %>
                                 <% badgeClass = "warning"; %>
+                                <% statusLabel = "Awaiting host response"; %>
                             <% } else if (booking.status === "rejected") { %>
                                 <% badgeClass = "danger"; %>
+                                <% statusLabel = "Rejected"; %>
+                            <% } else if (booking.status === "cancelled") { %>
+                                <% statusLabel = "Cancelled"; %>
+                            <% } else if (booking.status === "completed") { %>
+                                <% statusLabel = "Completed"; %>
                             <% } %>
                             <tr>
                                 <td>
@@ -43,17 +51,20 @@
                                     <small class="text-muted"><%= booking.guests %> guests · <%= booking.nights %> nights</small>
                                 </td>
                                 <td>₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></td>
-                                <td><span class="badge text-bg-<%= badgeClass %>"><%= booking.status %></span></td>
+                                <td>
+                                    <span class="badge text-bg-<%= badgeClass %>"><%= statusLabel %></span>
+                                    <small class="booking-status-code d-block"><%= booking.status %></small>
+                                </td>
                                 <td>
                                     <% if (booking.status === "pending") { %>
                                         <div class="d-flex gap-2">
-                                            <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST">
+                                            <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST" class="booking-action-form">
                                                 <input type="hidden" name="booking[status]" value="confirmed">
-                                                <button class="btn btn-sm btn-success">Confirm</button>
+                                                <button class="btn btn-sm btn-success w-100">Confirm</button>
                                             </form>
-                                            <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST">
+                                            <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST" class="booking-action-form">
                                                 <input type="hidden" name="booking[status]" value="rejected">
-                                                <button class="btn btn-sm btn-outline-danger">Reject</button>
+                                                <button class="btn btn-sm btn-outline-danger w-100">Reject</button>
                                             </form>
                                         </div>
                                     <% } else { %>
