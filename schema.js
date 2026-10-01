@@ -26,9 +26,9 @@ module.exports.ReviewSchema = Joi.object({
 // from a browser request.
 module.exports.bookingSchema = Joi.object({
     booking: Joi.object({
-        checkIn: Joi.date().iso().greater("now").required(),
+        checkIn: Joi.date().iso().required(),
         checkOut: Joi.date().iso().greater(Joi.ref("checkIn")).required(),
         guests: Joi.number().integer().min(1).max(50).required(),
         guestMessage: Joi.string().trim().max(500).allow("").optional()
-    }).required()
-}).required();
+    }).required().unknown(false)
+}).required().unknown(false);

@@ -45,8 +45,41 @@
                     <% } %>
 
                         <div class="col-8 offset-3 mb-3 ">
+                            <hr>
+                            <h4>Request to book</h4>
+                            <% if (!currentUser) { %>
+                                <p>Please <a href="/login">log in</a> to request this stay.</p>
+                            <% } else if (listing.owner && listing.owner._id && listing.owner._id.equals(currentUser._id)) { %>
+                                <p class="text-muted">You cannot book your own listing.</p>
+                            <% } else { %>
+                                <form action="/listings/<%= listing._id %>/bookings" method="POST" class="needs-validation" novalidate>
+                                    <div class="row">
+                                        <div class="mb-3 col-md-6">
+                                            <label for="checkIn" class="form-label">Check-in</label>
+                                            <input type="date" id="checkIn" name="booking[checkIn]" class="form-control" required>
+                                            <div class="invalid-feedback">Choose a check-in date.</div>
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <label for="checkOut" class="form-label">Check-out</label>
+                                            <input type="date" id="checkOut" name="booking[checkOut]" class="form-control" required>
+                                            <div class="invalid-feedback">Choose a check-out date.</div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bookingGuests" class="form-label">Guests</label>
+                                        <input type="number" id="bookingGuests" name="booking[guests]" class="form-control" min="1" max="<%= listing.maxGuests || 1 %>" step="1" value="1" required>
+                                        <div class="form-text">Maximum <%= listing.maxGuests || 1 %> guest<%= (listing.maxGuests || 1) === 1 ? "" : "s" %>.</div>
+                                        <div class="invalid-feedback">Enter a valid number of guests.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="guestMessage" class="form-label">Message for the host (optional)</label>
+                                        <textarea id="guestMessage" name="booking[guestMessage]" class="form-control" maxlength="500" rows="3"></textarea>
+                                    </div>
+                                    <button class="btn btn-dark">Send booking request</button>
+                                </form>
+                            <% } %>
+                            <hr>
                             <% if(currentUser){ %>
-                                <hr>
                                 <h4>Leave a Review</h4>
                                 <form action="/listings/<%= listing._id %>/reviews" method="POST"
                                     class="needs-validation" novalidate>
