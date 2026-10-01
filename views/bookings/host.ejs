@@ -1,0 +1,62 @@
+<% layout("../layouts/boilerplate") %>
+
+<div class="row mt-4">
+    <div class="col-md-10 offset-md-1">
+        <h2>Hosting Requests</h2>
+
+        <% if (bookings.length === 0) { %>
+            <p class="text-muted mt-3">You do not have any booking requests for your listings yet.</p>
+        <% } else { %>
+            <div class="table-responsive mt-3">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Listing</th>
+                            <th>Guest</th>
+                            <th>Stay</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% bookings.forEach(booking => { %>
+                            <tr>
+                                <td><%= booking.listing.title %></td>
+                                <td><%= booking.guest ? booking.guest.username : "Guest account unavailable" %></td>
+                                <td>
+                                    <%= booking.checkIn.toLocaleDateString("en-IN") %> – <%= booking.checkOut.toLocaleDateString("en-IN") %><br>
+                                    <small class="text-muted"><%= booking.guests %> guests · <%= booking.nights %> nights</small>
+                                </td>
+                                <td>₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></td>
+                                <td><span class="badge text-bg-<%= booking.status === "confirmed" ? "success" : booking.status === "pending" ? "warning" : booking.status === "rejected" ? "danger" : "secondary" %>"><%= booking.status %></span></td>
+                                <td>
+                                    <% if (booking.status === "pending") { %>
+                                        <div class="d-flex gap-2">
+                                            <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST">
+                                                <input type="hidden" name="booking[status]" value="confirmed">
+                                                <button class="btn btn-sm btn-success">Confirm</button>
+                                            </form>
+                                            <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST">
+                                                <input type="hidden" name="booking[status]" value="rejected">
+                                                <button class="btn btn-sm btn-outline-danger">Reject</button>
+                                            </form>
+                                        </div>
+                                    <% } else { %>
+                                        <span class="text-muted">No action available</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% if (booking.guestMessage) { %>
+                                <tr>
+                                    <td></td>
+                                    <td colspan="5"><small><strong>Guest message:</strong> <%= booking.guestMessage %></small></td>
+                                </tr>
+                            <% } %>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</div>
