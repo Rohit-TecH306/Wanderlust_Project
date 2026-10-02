@@ -51,6 +51,11 @@ const listingSchema = new schema({
     },
 });
 
+listingSchema.index({ category: 1 });
+listingSchema.index({ owner: 1 });
+listingSchema.index({ title: "text", location: "text", country: "text" });
+listingSchema.index({ geometry: "2dsphere" });
+
 listingSchema.post("findOneAndDelete", async (listing) => {
     if (listing && listing.reviews.length) {
         await Review.deleteMany({ _id: { $in: listing.reviews } });

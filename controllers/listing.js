@@ -5,19 +5,17 @@ module.exports.index = async (req, res) => {
     const filters = {};
 
     if (q && q.trim()) {
-        const search = q.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        filters.$or = [
-            { title: { $regex: search, $options: "i" } },
-            { location: { $regex: search, $options: "i" } },
-            { country: { $regex: search, $options: "i" } }
-        ];
+        filters.$text = { $search: q.trim() };
     }
 
     if (category) {
         filters.category = category;
     }
 
-    const allListings = await Listing.find(filters);
+    const allListings = await Listing.find(filters)
+        .select("title price image location country category")
+        .lean();
+
     res.render("listings/index.ejs", { allListings, q: q || "", selectedCategory: category || "" });
 }
 
@@ -71,17 +69,26 @@ module.exports.createListing = async (req, res, next) => {
 
 module.exports.showListing = async (req, res) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id).populate({
-        path: "reviews",
-        populate: {
-            path: "author",
-        }
-    }).populate("owner");;
+    let listing = await Listing.findById(id)
+        .populate({
+            path: "reviews",
+            select: "comment rating createdAt author",
+            populate: {
+                path: "author",
+                select: "username",
+            }
+        })
+        .populate({
+            path: "owner",
+            select: "username",
+        })
+        .lean();
+
     if (!listing) {
         req.flash("error", "Listing you requested for does not exist !");
         return res.redirect("/listings");
     }
-    console.log(listing);
+
     res.render("listings/show.ejs", { listing });
 }
 
