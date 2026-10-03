@@ -640,7 +640,7 @@ body {
 .booking-request-kicker {
     margin: 0 0 0.25rem;
     color: #667085;
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -677,7 +677,7 @@ body {
     gap: 0.4rem;
     margin: 0.75rem 0 1.15rem;
     color: #667085;
-    font-size: 0.85rem;
+    font-size: 1rem;
 }
 
 .booking-request-capacity i {
@@ -686,7 +686,7 @@ body {
 
 .booking-field-label {
     color: #344054;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     font-weight: 700;
 }
 
@@ -714,13 +714,13 @@ body {
 
 .booking-request-panel .form-text {
     color: #667085;
-    font-size: 0.78rem;
+    font-size: 0.9rem;
 }
 
 .booking-message-help {
     margin: -0.2rem 0 0.55rem;
     color: #667085;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 .booking-message-input {
