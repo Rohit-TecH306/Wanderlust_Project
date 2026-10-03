@@ -5,9 +5,10 @@ body {
     min-height: 100vh;
 }
 
-.container{
-    flex:1;
+.container {
+    flex: 1;
 }
+
 /* Navbar */
 .navbar {
     min-height: 5rem;
@@ -79,7 +80,7 @@ body {
         width: 100%;
     }
 
-    .navbar-collapse .navbar-nav + .navbar-nav {
+    .navbar-collapse .navbar-nav+.navbar-nav {
         margin-left: 0 !important;
         border-top: 1px solid #e5e5e5;
         margin-top: 0.5rem;
@@ -160,7 +161,7 @@ body {
 }
 
 /* Cards */
-.listing-card{
+.listing-card {
     border: none !important;
     margin-bottom: 2rem;
 }
@@ -184,42 +185,42 @@ body {
     padding: 0 !important;
 }
 
-.listing-link{
+.listing-link {
     text-decoration: none;
 }
 
 /* Card styling */
-.card-img-overlay{
+.card-img-overlay {
     opacity: 0;
 }
 
-.card-img-overlay:hover{
-    opacity:0.2;
-    background-color:white;
+.card-img-overlay:hover {
+    opacity: 0.2;
+    background-color: white;
 }
 
 /* New Listings */
-.add-btn{
+.add-btn {
     background-color: #fe424d !important;
     border: none !important;
 }
 
 /* Edit Listings */
-.edit-btn{
+.edit-btn {
     background-color: #fe424d !important;
     border: none !important;
 }
 
 /* Show Listings */
-.show-img{
+.show-img {
     height: 30vh;
 }
 
-.btns{
+.btns {
     display: flex;
 }
 
-.show-card{
+.show-card {
     padding-left: 0;
     padding-right: 0;
 }
@@ -417,7 +418,7 @@ body {
     font-weight: 700;
 }
 
-.booking-info-section + .booking-info-section {
+.booking-info-section+.booking-info-section {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #edf0f4;
@@ -648,7 +649,7 @@ body {
 .booking-request-header h4 {
     margin: 0;
     color: #172033;
-    font-size: 1.35rem;
+    font-size: 1.5rem;
     font-weight: 700;
 }
 
@@ -661,13 +662,13 @@ body {
 }
 
 .booking-request-price strong {
-    font-size: 1.35rem;
+    font-size: 1.65rem;
     font-weight: 700;
 }
 
 .booking-request-price span {
     color: #667085;
-    font-size: 0.85rem;
+    font-size: 1rem;
 }
 
 .booking-request-capacity {
@@ -685,7 +686,7 @@ body {
 
 .booking-field-label {
     color: #344054;
-    font-size: 0.83rem;
+    font-size: 0.95rem;
     font-weight: 700;
 }
 
@@ -701,6 +702,7 @@ body {
     border-color: #dfe3ea;
     border-radius: 0.6rem;
     color: #172033;
+    font-size: 1.05rem;
 }
 
 .booking-date-input:focus,
@@ -739,7 +741,7 @@ body {
     border-radius: 10px;
     background-color: #fe424d !important;
     color: #ffffff !important;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     font-weight: 800;
     letter-spacing: 0.02em;
     cursor: pointer;
@@ -1291,5 +1293,206 @@ body {
     .booking-status-row {
         align-items: flex-start;
         flex-direction: column;
+    }
+}
+
+/* ==========================================================================
+   Listing Details Page Styles (Consistent with Request to Book Section)
+   ========================================================================== */
+
+.listing-show-title {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #172033;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+}
+
+.listing-show-subheaders {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.listing-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    background: #f4f6f9;
+    color: #475467;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid #eaecf0;
+}
+
+.listing-badge i {
+    color: #fe424d;
+}
+
+.host-badge {
+    background: #fff5f5;
+    color: #fe424d;
+    border-color: #fed7d7;
+}
+
+.host-badge i {
+    color: #fe424d;
+}
+
+/* Hero Card */
+.listing-hero-card {
+    border: 1px solid #e6e9ef;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 0.75rem 1.75rem rgba(23, 32, 51, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 1rem;
+}
+
+.listing-hero-img {
+    height: 24rem;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 0.75rem;
+    border-bottom: none;
+}
+
+.listing-hero-body {
+    padding: 1.5rem 1.75rem;
+}
+
+.listing-hero-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+}
+
+.price-amount {
+    font-size: 1.95rem;
+    font-weight: 800;
+    color: #172033;
+}
+
+.price-period {
+    color: #667085;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.listing-hero-description {
+    color: #344054;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+
+.owner-actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Reviews Section */
+.review-form-card {
+    padding: 1.5rem;
+    border: 1px solid #e6e9ef;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0 0.5rem 1.5rem rgba(23, 32, 51, 0.05);
+}
+
+.review-textarea {
+    border-radius: 0.6rem;
+    border-color: #dfe3ea;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.review-textarea:focus {
+    border-color: #fe424d;
+    box-shadow: 0 0 0 0.2rem rgba(254, 66, 77, 0.12);
+}
+
+.review-submit-btn {
+    border-radius: 0.6rem;
+    padding: 0.65rem 1.5rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.review-card {
+    border: 1px solid #e6e9ef;
+    border-radius: 0.85rem;
+    background: #ffffff;
+    box-shadow: 0 0.25rem 0.75rem rgba(23, 32, 51, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    box-shadow: 0 0.5rem 1.25rem rgba(23, 32, 51, 0.08);
+    transform: translateY(-2px);
+}
+
+.review-avatar {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: #fe424d15;
+    color: #fe424d;
+    display: grid;
+    place-items: center;
+    font-size: 0.9rem;
+}
+
+.review-text {
+    color: #475467;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.review-delete-btn {
+    border-radius: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+/* Location Map Section */
+.listing-map-card {
+    padding: 1.5rem;
+    border: 1px solid #e6e9ef;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0 0.5rem 1.5rem rgba(23, 32, 51, 0.05);
+}
+
+.listing-map-frame {
+    height: 20rem;
+    width: 100%;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 768px) {
+    .listing-show-title {
+        font-size: 1.65rem;
+    }
+
+    .listing-hero-img {
+        height: 16rem;
+    }
+
+    .listing-hero-body {
+        padding: 1.1rem;
+    }
+
+    .review-form-card,
+    .listing-map-card {
+        padding: 1.1rem;
     }
 }
