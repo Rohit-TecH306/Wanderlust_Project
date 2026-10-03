@@ -10,6 +10,74 @@ const startOfTodayUtc = () => {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 };
 
+const parsePreviewDate = (value) => {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return null;
+  }
+
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+module.exports.previewBooking = async (req, res) => {
+  const { checkIn: checkInValue, checkOut: checkOutValue, guests: guestsValue } = req.query;
+  const checkIn = parsePreviewDate(checkInValue);
+  const checkOut = parsePreviewDate(checkOutValue);
+  const guests = Number(guestsValue);
+
+  if (!checkIn || !checkOut || !Number.isInteger(guests) || guests < 1) {
+    return res.status(400).json({ message: "Choose valid dates and guest count." });
+  }
+
+  const listing = await Listing.findById(req.params.id).select("owner maxGuests price").lean();
+  if (!listing) {
+    return res.status(404).json({ message: "Listing not found." });
+  }
+
+  if (!listing.owner || listing.owner.equals(req.user._id)) {
+    return res.status(403).json({ message: "You cannot book your own listing." });
+  }
+
+  if (checkIn < startOfTodayUtc()) {
+    return res.status(400).json({ message: "Check-in date cannot be in the past." });
+  }
+
+  const maxGuests = listing.maxGuests || 1;
+  if (guests > maxGuests) {
+    return res.status(400).json({ message: `This listing allows a maximum of ${maxGuests} guests.` });
+  }
+
+  const nights = (checkOut.getTime() - checkIn.getTime()) / DAY_IN_MILLISECONDS;
+  if (!Number.isInteger(nights) || nights < 1) {
+    return res.status(400).json({ message: "Check-out must be after check-in." });
+  }
+
+  const pricePerNightPaise = Math.round(Number(listing.price) * 100);
+  const totalAmountPaise = pricePerNightPaise * nights;
+  if (!Number.isSafeInteger(pricePerNightPaise) || pricePerNightPaise < 0 || !Number.isSafeInteger(totalAmountPaise)) {
+    return res.status(500).json({ message: "Booking total could not be calculated safely." });
+  }
+
+  const hasConfirmedConflict = await Booking.exists({
+    listing: listing._id,
+    status: "confirmed",
+    checkIn: { $lt: checkOut },
+    checkOut: { $gt: checkIn },
+  });
+
+  if (hasConfirmedConflict) {
+    return res.json({ available: false, message: "These dates are not available." });
+  }
+
+  res.json({
+    available: true,
+    nights,
+    pricePerNightPaise,
+    totalAmountPaise,
+    currency: "INR",
+  });
+};
+
 module.exports.createBooking = async (req, res) => {
   const listing = await Listing.findById(req.params.id);
   if (!listing) {
@@ -78,6 +146,23 @@ module.exports.renderMyBookings = async (req, res) => {
     .sort({ createdAt: -1 });
 
   res.render("bookings/index.ejs", { bookings });
+};
+
+module.exports.renderBookingDetails = async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    throw new ExpressError(404, "Booking not found.");
+  }
+
+  const booking = await Booking.findOne({
+    _id: req.params.id,
+    guest: req.user._id,
+  }).populate("listing", "title image location country");
+
+  if (!booking) {
+    throw new ExpressError(404, "Booking not found.");
+  }
+
+  res.render("bookings/show.ejs", { booking });
 };
 
 module.exports.cancelBooking = async (req, res) => {

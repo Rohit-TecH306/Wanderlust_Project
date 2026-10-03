@@ -58,7 +58,7 @@
                             <% } else if (listing.owner && listing.owner._id && listing.owner._id.equals(currentUser._id)) { %>
                                 <p class="text-muted">You cannot book your own listing.</p>
                             <% } else { %>
-                                <form action="/listings/<%= listing._id %>/bookings" method="POST" class="needs-validation" novalidate>
+                                <form action="/listings/<%= listing._id %>/bookings" method="POST" class="needs-validation" data-booking-form data-preview-url="/listings/<%= listing._id %>/bookings/preview" novalidate>
                                     <div class="row">
                                         <div class="mb-3 col-md-6">
                                             <label for="checkIn" class="form-label">Check-in</label>
@@ -77,12 +77,60 @@
                                         <div class="form-text">Maximum <%= listing.maxGuests || 1 %> guest<%= (listing.maxGuests || 1) === 1 ? "" : "s" %>.</div>
                                         <div class="invalid-feedback">Enter a valid number of guests.</div>
                                     </div>
+                                    <p id="bookingPreview" class="form-text" aria-live="polite">Choose dates to see availability and estimated total.</p>
                                     <div class="mb-3">
                                         <label for="guestMessage" class="form-label">Message for the host (optional)</label>
                                         <textarea id="guestMessage" name="booking[guestMessage]" class="form-control" maxlength="500" rows="3"></textarea>
                                     </div>
                                     <button class="btn btn-dark">Send booking request</button>
                                 </form>
+                                <script>
+                                    const bookingForm = document.querySelector("[data-booking-form]");
+                                    const bookingPreview = document.getElementById("bookingPreview");
+                                    let previewTimer;
+                                    let previewRequestId = 0;
+
+                                    const updateBookingPreview = async () => {
+                                        const checkIn = document.getElementById("checkIn").value;
+                                        const checkOut = document.getElementById("checkOut").value;
+                                        const guests = document.getElementById("bookingGuests").value;
+                                        if (!checkIn || !checkOut || !guests) {
+                                            bookingPreview.textContent = "Choose dates to see availability and estimated total.";
+                                            return;
+                                        }
+
+                                        const requestId = ++previewRequestId;
+                                        bookingPreview.textContent = "Checking availability...";
+                                        const params = new URLSearchParams({ checkIn, checkOut, guests });
+
+                                        try {
+                                            const response = await fetch(`${bookingForm.dataset.previewUrl}?${params}`);
+                                            const result = await response.json();
+                                            if (requestId !== previewRequestId) return;
+                                            if (!response.ok || result.available === false) {
+                                                bookingPreview.textContent = result.message || "These dates are not available.";
+                                                return;
+                                            }
+
+                                            const total = (result.totalAmountPaise / 100).toLocaleString("en-IN", {
+                                                style: "currency",
+                                                currency: result.currency,
+                                            });
+                                            bookingPreview.textContent = `${result.nights} night${result.nights === 1 ? "" : "s"} · Estimated total ${total}`;
+                                        } catch (error) {
+                                            if (requestId === previewRequestId) {
+                                                bookingPreview.textContent = "Availability could not be checked. You can still submit the request.";
+                                            }
+                                        }
+                                    };
+
+                                    bookingForm.querySelectorAll("#checkIn, #checkOut, #bookingGuests").forEach((field) => {
+                                        field.addEventListener("change", () => {
+                                            clearTimeout(previewTimer);
+                                            previewTimer = setTimeout(updateBookingPreview, 250);
+                                        });
+                                    });
+                                </script>
                             <% } %>
                             <hr>
                             <% if(currentUser){ %>

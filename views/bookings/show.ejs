@@ -1,0 +1,78 @@
+<% layout("/layouts/boilerplate") %>
+<%
+    const now = new Date();
+    const startOfTodayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    let statusLabel = "Booking status";
+    let statusIcon = "fa-circle-info";
+    if (booking.status === "confirmed") {
+        statusLabel = "Confirmed";
+        statusIcon = "fa-circle-check";
+    } else if (booking.status === "pending") {
+        statusLabel = "Awaiting host response";
+        statusIcon = "fa-clock";
+    } else if (booking.status === "rejected") {
+        statusLabel = "Rejected";
+        statusIcon = "fa-circle-xmark";
+    } else if (booking.status === "cancelled") {
+        statusLabel = "Cancelled";
+        statusIcon = "fa-ban";
+    } else if (booking.status === "completed") {
+        statusLabel = "Completed";
+        statusIcon = "fa-flag-checkered";
+    }
+%>
+
+<main class="bookings-page">
+    <div class="bookings-page-shell booking-details-shell">
+        <a href="/bookings" class="booking-back-link"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to My Bookings</span></a>
+        <header class="bookings-page-header booking-details-header">
+            <h1>Booking Details</h1>
+            <p>Review the information for your booking request.</p>
+        </header>
+
+        <article class="booking-details-card">
+            <% if (booking.listing && booking.listing.image && booking.listing.image.url) { %>
+                <img src="<%= booking.listing.image.url %>" class="booking-details-image" alt="<%= booking.listing.title %>" loading="lazy">
+            <% } %>
+            <div class="booking-details-content">
+                <section class="booking-info-section booking-property-section">
+                    <p class="booking-section-label">Property information</p>
+                    <h2><%= booking.listing ? booking.listing.title : "Listing no longer available" %></h2>
+                    <% if (booking.listing) { %>
+                        <p class="booking-location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><%= booking.listing.location %>, <%= booking.listing.country %></p>
+                    <% } %>
+                </section>
+                <section class="booking-info-section">
+                    <p class="booking-section-label">Stay information</p>
+                    <div class="booking-date-grid">
+                        <div><span>Check-in</span><strong><%= booking.checkIn.toLocaleDateString("en-IN") %></strong></div>
+                        <div><span>Check-out</span><strong><%= booking.checkOut.toLocaleDateString("en-IN") %></strong></div>
+                    </div>
+                    <div class="booking-detail-chips">
+                        <span><i class="fa-solid fa-user-group" aria-hidden="true"></i><%= booking.guests %> guest<%= booking.guests === 1 ? "" : "s" %></span>
+                        <span><i class="fa-regular fa-moon" aria-hidden="true"></i><%= booking.nights %> night<%= booking.nights === 1 ? "" : "s" %></span>
+                    </div>
+                </section>
+                <section class="booking-info-section booking-payment-section">
+                    <p class="booking-section-label">Payment information</p>
+                    <div class="booking-total-row"><span>Total amount</span><strong>₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></strong></div>
+                </section>
+                <% if (booking.guestMessage) { %>
+                    <section class="booking-info-section">
+                        <p class="booking-section-label">Message to host</p>
+                        <p class="booking-message"><%= booking.guestMessage %></p>
+                    </section>
+                <% } %>
+                <section class="booking-info-section booking-status-section">
+                    <p class="booking-section-label">Booking status</p>
+                    <span class="badge booking-status-badge booking-status-<%= booking.status %>"><i class="fa-solid <%= statusIcon %>" aria-hidden="true"></i><%= statusLabel %></span>
+                </section>
+                <% if (["pending", "confirmed"].includes(booking.status) && booking.checkIn > startOfTodayUtc) { %>
+                    <form action="/bookings/<%= booking._id %>/cancel?_method=PATCH" method="POST" class="booking-action-form" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                        <button class="btn booking-cancel-button w-100"><i class="fa-solid fa-ban" aria-hidden="true"></i>Cancel booking</button>
+                    </form>
+                <% } %>
+            </div>
+        </article>
+    </div>
+</main>

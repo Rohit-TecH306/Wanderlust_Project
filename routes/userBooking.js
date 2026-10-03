@@ -5,6 +5,7 @@ const { isLoggedIn } = require("../middleware.js");
 const bookingController = require("../controllers/booking.js");
 
 router.get("/", isLoggedIn, wrapAsync(bookingController.renderMyBookings));
+router.get("/:id", isLoggedIn, wrapAsync(bookingController.renderBookingDetails));
 
 router.patch("/:id/cancel", isLoggedIn, wrapAsync(bookingController.cancelBooking));
 
