@@ -52,55 +52,124 @@
 
                         <div class="col-8 offset-3 mb-3 ">
                             <hr>
-                            <h4>Request to book</h4>
                             <% if (!currentUser) { %>
+                                <h4>Request to book</h4>
                                 <p>Please <a href="/login">log in</a> to request this stay.</p>
                             <% } else if (listing.owner && listing.owner._id && listing.owner._id.equals(currentUser._id)) { %>
+                                <h4>Request to book</h4>
                                 <p class="text-muted">You cannot book your own listing.</p>
                             <% } else { %>
+                                <section class="booking-request-panel">
+                                    <header class="booking-request-header">
+                                        <div>
+                                            <p class="booking-request-kicker">Stay request</p>
+                                            <h4>Request to book</h4>
+                                        </div>
+                                        <div class="booking-request-price">
+                                            <strong>₹<%= listing.price.toLocaleString("en-IN") %></strong>
+                                            <span>/ night</span>
+                                        </div>
+                                    </header>
+                                    <p class="booking-request-capacity"><i class="fa-solid fa-user-group" aria-hidden="true"></i>Maximum <%= listing.maxGuests || 1 %> guest<%= (listing.maxGuests || 1) === 1 ? "" : "s" %></p>
                                 <form action="/listings/<%= listing._id %>/bookings" method="POST" class="needs-validation" data-booking-form data-preview-url="/listings/<%= listing._id %>/bookings/preview" novalidate>
                                     <div class="row">
                                         <div class="mb-3 col-md-6">
-                                            <label for="checkIn" class="form-label">Check-in</label>
-                                            <input type="date" id="checkIn" name="booking[checkIn]" class="form-control" required>
+                                            <label for="checkIn" class="form-label booking-field-label">Check-in</label>
+                                            <input type="date" id="checkIn" name="booking[checkIn]" class="form-control booking-date-input" required>
                                             <div class="invalid-feedback">Choose a check-in date.</div>
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label for="checkOut" class="form-label">Check-out</label>
-                                            <input type="date" id="checkOut" name="booking[checkOut]" class="form-control" required>
+                                            <label for="checkOut" class="form-label booking-field-label">Check-out</label>
+                                            <input type="date" id="checkOut" name="booking[checkOut]" class="form-control booking-date-input" required>
                                             <div class="invalid-feedback">Choose a check-out date.</div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="bookingGuests" class="form-label">Guests</label>
-                                        <input type="number" id="bookingGuests" name="booking[guests]" class="form-control" min="1" max="<%= listing.maxGuests || 1 %>" step="1" value="1" required>
+                                        <label for="bookingGuests" class="form-label booking-field-label">Guests</label>
+                                        <input type="number" id="bookingGuests" name="booking[guests]" class="form-control booking-guest-input" min="1" max="<%= listing.maxGuests || 1 %>" step="1" value="1" required>
                                         <div class="form-text">Maximum <%= listing.maxGuests || 1 %> guest<%= (listing.maxGuests || 1) === 1 ? "" : "s" %>.</div>
                                         <div class="invalid-feedback">Enter a valid number of guests.</div>
                                     </div>
-                                    <p id="bookingPreview" class="form-text" aria-live="polite">Choose dates to see availability and estimated total.</p>
+                                    <section id="bookingPreview" class="booking-summary booking-summary-idle" role="status" aria-live="polite">
+                                        <div class="booking-summary-header">
+                                            <span id="bookingPreviewIcon" class="booking-summary-icon" aria-hidden="true"><i class="fa-regular fa-calendar"></i></span>
+                                            <div>
+                                                <p class="booking-summary-title">Booking Summary</p>
+                                                <p id="bookingPreviewMessage" class="booking-summary-message">Select your check-in and check-out dates to see availability and estimated total.</p>
+                                            </div>
+                                        </div>
+                                        <div id="bookingPreviewDetails" class="booking-summary-details" hidden>
+                                            <div class="booking-summary-availability"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Available</div>
+                                            <div class="booking-summary-main">
+                                                <strong id="bookingPreviewNights"></strong>
+                                                <span id="bookingPreviewBreakdown"></span>
+                                            </div>
+                                            <div class="booking-summary-total">
+                                                <span>Estimated total</span>
+                                                <strong id="bookingPreviewTotal"></strong>
+                                            </div>
+                                        </div>
+                                    </section>
                                     <div class="mb-3">
-                                        <label for="guestMessage" class="form-label">Message for the host (optional)</label>
-                                        <textarea id="guestMessage" name="booking[guestMessage]" class="form-control" maxlength="500" rows="3"></textarea>
+                                        <label for="guestMessage" class="form-label booking-field-label">Message for the host</label>
+                                        <p id="guestMessageHelp" class="booking-message-help">Optional - tell the host anything they should know.</p>
+                                        <textarea id="guestMessage" name="booking[guestMessage]" class="form-control booking-message-input" maxlength="500" rows="3" aria-describedby="guestMessageHelp"></textarea>
                                     </div>
-                                    <button class="btn btn-dark">Send booking request</button>
+                                    <button type="submit" class="btn booking-submit-button" data-booking-submit>
+                                        <i class="fa-regular fa-calendar-check" data-booking-submit-icon aria-hidden="true"></i>
+                                        <span data-booking-submit-label>Send Booking Request</span>
+                                    </button>
                                 </form>
                                 <script>
                                     const bookingForm = document.querySelector("[data-booking-form]");
                                     const bookingPreview = document.getElementById("bookingPreview");
+                                    const bookingPreviewIcon = document.getElementById("bookingPreviewIcon");
+                                    const bookingPreviewMessage = document.getElementById("bookingPreviewMessage");
+                                    const bookingPreviewDetails = document.getElementById("bookingPreviewDetails");
+                                    const bookingPreviewNights = document.getElementById("bookingPreviewNights");
+                                    const bookingPreviewBreakdown = document.getElementById("bookingPreviewBreakdown");
+                                    const bookingPreviewTotal = document.getElementById("bookingPreviewTotal");
                                     let previewTimer;
                                     let previewRequestId = 0;
+
+                                    const setBookingPreviewState = (state, message) => {
+                                        bookingPreview.className = `booking-summary booking-summary-${state}`;
+                                        bookingPreviewMessage.textContent = message;
+                                        bookingPreviewDetails.hidden = state !== "available";
+                                        bookingPreviewIcon.innerHTML = state === "loading"
+                                            ? '<span class="booking-summary-spinner" aria-label="Loading"></span>'
+                                            : `<i class="fa-regular ${state === "available" ? "fa-circle-check" : "fa-calendar"}" aria-hidden="true"></i>`;
+                                    };
+
+                                    const formatBookingCurrency = (amountPaise, currency) => new Intl.NumberFormat("en-IN", {
+                                        style: "currency",
+                                        currency,
+                                        maximumFractionDigits: 0,
+                                    }).format(amountPaise / 100);
 
                                     const updateBookingPreview = async () => {
                                         const checkIn = document.getElementById("checkIn").value;
                                         const checkOut = document.getElementById("checkOut").value;
-                                        const guests = document.getElementById("bookingGuests").value;
-                                        if (!checkIn || !checkOut || !guests) {
-                                            bookingPreview.textContent = "Choose dates to see availability and estimated total.";
+                                        const guests = Number(document.getElementById("bookingGuests").value);
+                                        const maxGuests = Number(document.getElementById("bookingGuests").max);
+                                        const requestId = ++previewRequestId;
+
+                                        if (!checkIn || !checkOut) {
+                                            setBookingPreviewState("idle", "Select your check-in and check-out dates to see availability and estimated total.");
                                             return;
                                         }
 
-                                        const requestId = ++previewRequestId;
-                                        bookingPreview.textContent = "Checking availability...";
+                                        if (!Number.isInteger(guests) || guests < 1 || guests > maxGuests) {
+                                            setBookingPreviewState("invalid", "Enter a valid guest count for this listing.");
+                                            return;
+                                        }
+
+                                        if (checkOut <= checkIn) {
+                                            setBookingPreviewState("invalid", "Check-out must be after check-in.");
+                                            return;
+                                        }
+
+                                        setBookingPreviewState("loading", "Checking availability...");
                                         const params = new URLSearchParams({ checkIn, checkOut, guests });
 
                                         try {
@@ -108,18 +177,17 @@
                                             const result = await response.json();
                                             if (requestId !== previewRequestId) return;
                                             if (!response.ok || result.available === false) {
-                                                bookingPreview.textContent = result.message || "These dates are not available.";
+                                                setBookingPreviewState("unavailable", "These dates are unavailable. Please choose different dates.");
                                                 return;
                                             }
 
-                                            const total = (result.totalAmountPaise / 100).toLocaleString("en-IN", {
-                                                style: "currency",
-                                                currency: result.currency,
-                                            });
-                                            bookingPreview.textContent = `${result.nights} night${result.nights === 1 ? "" : "s"} · Estimated total ${total}`;
+                                            bookingPreviewNights.textContent = `${result.nights} night${result.nights === 1 ? "" : "s"}`;
+                                            bookingPreviewBreakdown.textContent = `${formatBookingCurrency(result.pricePerNightPaise, result.currency)} × ${result.nights} night${result.nights === 1 ? "" : "s"}`;
+                                            bookingPreviewTotal.textContent = formatBookingCurrency(result.totalAmountPaise, result.currency);
+                                            setBookingPreviewState("available", "Your selected dates are available.");
                                         } catch (error) {
                                             if (requestId === previewRequestId) {
-                                                bookingPreview.textContent = "Availability could not be checked. You can still submit the request.";
+                                                setBookingPreviewState("error", "We couldn't check availability right now. Please try again.");
                                             }
                                         }
                                     };
@@ -130,7 +198,32 @@
                                             previewTimer = setTimeout(updateBookingPreview, 250);
                                         });
                                     });
+
+                                    bookingForm.addEventListener("submit", (e) => {
+                                        if (!bookingForm.checkValidity()) return;
+                                        if (bookingForm.dataset.submitting === "true") {
+                                            e.preventDefault();
+                                            return;
+                                        }
+
+                                        bookingForm.dataset.submitting = "true";
+                                        const submitButton = bookingForm.querySelector("[data-booking-submit]");
+                                        const submitLabel = bookingForm.querySelector("[data-booking-submit-label]");
+                                        const submitIcon = bookingForm.querySelector("[data-booking-submit-icon]");
+
+                                        if (submitButton) {
+                                            submitButton.disabled = true;
+                                            submitButton.setAttribute("aria-busy", "true");
+                                        }
+                                        if (submitLabel) {
+                                            submitLabel.textContent = "Sending Request...";
+                                        }
+                                        if (submitIcon) {
+                                            submitIcon.className = "booking-submit-spinner";
+                                        }
+                                    });
                                 </script>
+                                </section>
                             <% } %>
                             <hr>
                             <% if(currentUser){ %>
