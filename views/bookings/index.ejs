@@ -1,62 +1,70 @@
 <% layout("/layouts/boilerplate") %>
-<%
-    const now = new Date();
-    const startOfTodayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-%>
-
-<div class="row mt-4">
-    <div class="col-md-10 offset-md-1">
-        <h2>My Bookings</h2>
+<main class="bookings-page">
+    <div class="bookings-page-shell">
+        <header class="bookings-page-header">
+            <h1>My Bookings</h1>
+            <p>Track your booking requests and upcoming stays.</p>
+        </header>
 
         <% if (bookings.length === 0) { %>
-            <p class="text-muted mt-3">You have not sent any booking requests yet.</p>
-            <a href="/listings" class="btn btn-dark">Explore listings</a>
+            <section class="booking-empty-state">
+                <i class="fa-regular fa-calendar-xmark" aria-hidden="true"></i>
+                <h2>No bookings yet</h2>
+                <p>Your requested stays will appear here.</p>
+                <a href="/listings" class="btn booking-primary-button">Explore listings</a>
+            </section>
         <% } else { %>
-            <div class="row row-cols-1 row-cols-md-2 g-4 mt-1">
+            <div class="table-responsive bookings-table-wrap">
+                <table class="table bookings-table align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Property</th>
+                            <th scope="col">Check-in</th>
+                            <th scope="col">Check-out</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                 <% bookings.forEach(booking => { %>
-                    <% let badgeClass = "secondary"; %>
                     <% let statusLabel = "Booking status"; %>
+                    <% let statusIcon = "fa-circle-info"; %>
                     <% if (booking.status === "confirmed") { %>
-                        <% badgeClass = "success"; %>
                         <% statusLabel = "Confirmed"; %>
+                        <% statusIcon = "fa-circle-check"; %>
                     <% } else if (booking.status === "pending") { %>
-                        <% badgeClass = "warning"; %>
                         <% statusLabel = "Awaiting host response"; %>
+                        <% statusIcon = "fa-clock"; %>
                     <% } else if (booking.status === "rejected") { %>
-                        <% badgeClass = "danger"; %>
                         <% statusLabel = "Rejected"; %>
+                        <% statusIcon = "fa-circle-xmark"; %>
                     <% } else if (booking.status === "cancelled") { %>
                         <% statusLabel = "Cancelled"; %>
+                        <% statusIcon = "fa-ban"; %>
                     <% } else if (booking.status === "completed") { %>
                         <% statusLabel = "Completed"; %>
+                        <% statusIcon = "fa-flag-checkered"; %>
                     <% } %>
-                    <div class="col booking-card-column">
-                        <div class="card h-100">
-                            <% if (booking.listing && booking.listing.image && booking.listing.image.url) { %>
-                                <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="<%= booking.listing.title %>">
+                    <tr>
+                        <td>
+                            <strong class="booking-table-property"><%= booking.listing ? booking.listing.title : "Listing no longer available" %></strong>
+                            <% if (booking.listing) { %>
+                                <span class="booking-table-location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><%= booking.listing.location %>, <%= booking.listing.country %></span>
                             <% } %>
-                            <div class="card-body booking-card-body">
-                                <h5 class="card-title"><%= booking.listing ? booking.listing.title : "Listing no longer available" %></h5>
-                                <% if (booking.listing) { %>
-                                    <p class="card-text text-muted"><%= booking.listing.location %>, <%= booking.listing.country %></p>
-                                <% } %>
-                                <p class="card-text mb-1"><strong>Dates:</strong> <%= booking.checkIn.toLocaleDateString("en-IN") %> – <%= booking.checkOut.toLocaleDateString("en-IN") %></p>
-                                <p class="card-text mb-1"><strong>Guests:</strong> <%= booking.guests %> &middot; <strong>Nights:</strong> <%= booking.nights %></p>
-                                <p class="card-text mb-3"><strong>Total:</strong> ₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></p>
-                                <div class="booking-status-row">
-                                    <span class="badge text-bg-<%= badgeClass %>"><%= statusLabel %></span>
-                                    <span class="booking-status-code"><%= booking.status %></span>
-                                </div>
-                                <% if (["pending", "confirmed"].includes(booking.status) && booking.checkIn > startOfTodayUtc) { %>
-                                    <form action="/bookings/<%= booking._id %>/cancel?_method=PATCH" method="POST" class="booking-action-form" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                                        <button class="btn btn-sm btn-outline-danger w-100">Cancel booking</button>
-                                    </form>
-                                <% } %>
-                            </div>
-                        </div>
-                    </div>
+                        </td>
+                        <td data-label="Check-in"><%= booking.checkIn.toLocaleDateString("en-IN") %></td>
+                        <td data-label="Check-out"><%= booking.checkOut.toLocaleDateString("en-IN") %></td>
+                        <td data-label="Total"><strong>₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></strong></td>
+                        <td data-label="Status"><span class="badge booking-status-badge booking-status-<%= booking.status %>"><i class="fa-solid <%= statusIcon %>" aria-hidden="true"></i><%= statusLabel %></span></td>
+                        <td data-label="Action" class="text-lg-end">
+                            <a href="/bookings/<%= booking._id %>" class="btn booking-details-button"><span>View details</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
                 <% }) %>
+                    </tbody>
+                </table>
             </div>
         <% } %>
     </div>
-</div>
+</main>

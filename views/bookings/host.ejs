@@ -1,87 +1,89 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row mt-4">
-    <div class="col-md-10 offset-md-1">
-        <h2>Hosting Requests</h2>
+<main class="host-requests-page">
+    <div class="host-requests-shell">
+        <header class="host-requests-header">
+            <h1>Hosting Requests</h1>
+            <p>Review and respond to booking requests for your listings.</p>
+        </header>
 
         <% if (bookings.length === 0) { %>
-            <p class="text-muted mt-3">You do not have any booking requests for your listings yet.</p>
+            <section class="host-requests-empty">
+                <i class="fa-regular fa-calendar-xmark" aria-hidden="true"></i>
+                <h2>No hosting requests yet</h2>
+                <p>Requests for your listings will appear here.</p>
+            </section>
         <% } else { %>
-            <div class="table-responsive mt-3">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Listing</th>
-                            <th>Guest</th>
-                            <th>Stay</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% bookings.forEach(booking => { %>
-                            <% let badgeClass = "secondary"; %>
-                            <% let statusLabel = "Booking status"; %>
-                            <% if (booking.status === "confirmed") { %>
-                                <% badgeClass = "success"; %>
-                                <% statusLabel = "Confirmed"; %>
-                            <% } else if (booking.status === "pending") { %>
-                                <% badgeClass = "warning"; %>
-                                <% statusLabel = "Awaiting host response"; %>
-                            <% } else if (booking.status === "rejected") { %>
-                                <% badgeClass = "danger"; %>
-                                <% statusLabel = "Rejected"; %>
-                            <% } else if (booking.status === "cancelled") { %>
-                                <% statusLabel = "Cancelled"; %>
-                            <% } else if (booking.status === "completed") { %>
-                                <% statusLabel = "Completed"; %>
-                            <% } %>
-                            <tr>
-                                <td>
-                                    <% if (booking.listing) { %>
-                                        <%= booking.listing.title %>
-                                    <% } else { %>
-                                        Listing no longer available
-                                    <% } %>
-                                </td>
-                                <td><%= booking.guest ? booking.guest.username : "Guest account unavailable" %></td>
-                                <td>
-                                    <%= booking.checkIn.toLocaleDateString("en-IN") %> – <%= booking.checkOut.toLocaleDateString("en-IN") %><br>
-                                    <small class="text-muted"><%= booking.guests %> guests · <%= booking.nights %> nights</small>
-                                </td>
-                                <td>₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></td>
-                                <td>
-                                    <span class="badge text-bg-<%= badgeClass %>"><%= statusLabel %></span>
-                                    <small class="booking-status-code d-block"><%= booking.status %></small>
-                                </td>
-                                <td>
-                                    <% if (booking.status === "pending") { %>
-                                        <div class="d-flex gap-2">
-                                            <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST" class="booking-action-form">
-                                                <input type="hidden" name="booking[status]" value="confirmed">
-                                                <button class="btn btn-sm btn-success w-100">Confirm</button>
-                                            </form>
-                                            <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST" class="booking-action-form">
-                                                <input type="hidden" name="booking[status]" value="rejected">
-                                                <button class="btn btn-sm btn-outline-danger w-100">Reject</button>
-                                            </form>
-                                        </div>
-                                    <% } else { %>
-                                        <span class="text-muted">No action available</span>
-                                    <% } %>
-                                </td>
-                            </tr>
-                            <% if (booking.guestMessage) { %>
-                                <tr>
-                                    <td></td>
-                                    <td colspan="5"><small><strong>Guest message:</strong> <%= booking.guestMessage %></small></td>
-                                </tr>
-                            <% } %>
-                        <% }) %>
-                    </tbody>
-                </table>
+            <div class="host-requests-list">
+                <% bookings.forEach(booking => { %>
+                    <% let statusLabel = "Booking status"; %>
+                    <% let statusIcon = "fa-circle-info"; %>
+                    <% if (booking.status === "confirmed") { %>
+                        <% statusLabel = "Confirmed"; %>
+                        <% statusIcon = "fa-circle-check"; %>
+                    <% } else if (booking.status === "pending") { %>
+                        <% statusLabel = "Awaiting response"; %>
+                        <% statusIcon = "fa-clock"; %>
+                    <% } else if (booking.status === "rejected") { %>
+                        <% statusLabel = "Rejected"; %>
+                        <% statusIcon = "fa-circle-xmark"; %>
+                    <% } else if (booking.status === "cancelled") { %>
+                        <% statusLabel = "Cancelled"; %>
+                        <% statusIcon = "fa-ban"; %>
+                    <% } else if (booking.status === "completed") { %>
+                        <% statusLabel = "Completed"; %>
+                        <% statusIcon = "fa-flag-checkered"; %>
+                    <% } %>
+                    <article class="host-request-record">
+                        <header class="host-request-header-row">
+                            <div>
+                                <p class="host-request-label">Listing</p>
+                                <h2><%= booking.listing ? booking.listing.title : "Listing no longer available" %></h2>
+                                <p class="host-request-guest"><span>Guest</span><strong><%= booking.guest ? booking.guest.username : "Guest account unavailable" %></strong></p>
+                            </div>
+                            <span class="badge booking-status-badge booking-status-<%= booking.status %>"><i class="fa-solid <%= statusIcon %>" aria-hidden="true"></i><%= statusLabel %></span>
+                        </header>
+
+                        <div class="host-request-grid">
+                            <div class="host-request-stay">
+                                <p class="host-request-label">Stay</p>
+                                <div class="host-request-stay-box">
+                                    <strong><%= booking.checkIn.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) %> <span aria-hidden="true">→</span> <%= booking.checkOut.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) %></strong>
+                                    <span><%= booking.nights %> night<%= booking.nights === 1 ? "" : "s" %> · <%= booking.guests %> guest<%= booking.guests === 1 ? "" : "s" %></span>
+                                </div>
+                            </div>
+                            <div class="host-request-total">
+                                <p class="host-request-label">Total</p>
+                                <strong>₹<%= (booking.totalAmountPaise / 100).toLocaleString("en-IN") %></strong>
+                            </div>
+                            <div class="host-request-action">
+                                <p class="host-request-label">Action</p>
+                                <% if (booking.status === "pending") { %>
+                                    <div class="host-request-action-buttons">
+                                        <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST">
+                                            <input type="hidden" name="booking[status]" value="confirmed">
+                                            <button class="btn host-confirm-button"><i class="fa-solid fa-check" aria-hidden="true"></i>Confirm</button>
+                                        </form>
+                                        <form action="/host/bookings/<%= booking._id %>?_method=PATCH" method="POST">
+                                            <input type="hidden" name="booking[status]" value="rejected">
+                                            <button class="btn host-reject-button"><i class="fa-solid fa-xmark" aria-hidden="true"></i>Reject</button>
+                                        </form>
+                                    </div>
+                                <% } else { %>
+                                    <span class="host-no-action">No action available</span>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <% if (booking.guestMessage) { %>
+                            <div class="host-request-message">
+                                <p class="host-request-label"><i class="fa-regular fa-message" aria-hidden="true"></i>Guest message</p>
+                                <p><%= booking.guestMessage %></p>
+                            </div>
+                        <% } %>
+                    </article>
+                <% }) %>
             </div>
         <% } %>
     </div>
-</div>
+</main>
