@@ -1,0 +1,136 @@
+<% layout("/layouts/boilerplate") %>
+
+<main class="host-onboard-page">
+    <section class="host-onboard-hero">
+        <p class="host-onboard-kicker">Start hosting</p>
+        <h1>Become a Host</h1>
+        <p class="host-onboard-lead">Share a place you love, welcome travellers, and manage your hosting activities with ease—all from one place.</p>
+    </section>
+
+    <section class="host-onboard-panel mb-4" aria-labelledby="why-host-heading">
+        <h2 id="why-host-heading">Why become a host?</h2>
+        <div class="host-onboard-benefits">
+            <article class="host-onboard-benefit">
+                <i class="fa-solid fa-house-chimney" aria-hidden="true"></i>
+                <h3>Share your property</h3>
+                <p>List a home, room, or unique stay and describe it in your own words.</p>
+            </article>
+            <article class="host-onboard-benefit">
+                <i class="fa-solid fa-users" aria-hidden="true"></i>
+                <h3>Reach guests</h3>
+                <p>Travellers already browsing Wanderlust can discover your listing and send requests.</p>
+            </article>
+            <article class="host-onboard-benefit">
+                <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+                <h3>Manage booking requests</h3>
+                <p>Review dates, guest counts, and messages, then confirm or decline with confidence.</p>
+            </article>
+            <article class="host-onboard-benefit">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                <h3>Manage your listing</h3>
+                <p>Update photos, pricing, and details whenever your stay changes.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="host-onboard-panel mb-4" aria-labelledby="how-hosting-heading">
+        <h2 id="how-hosting-heading">How hosting works</h2>
+        <ol class="host-onboard-steps">
+            <li>
+                <span class="host-onboard-step-num">1</span>
+                <div>
+                    <h3>Create your listing</h3>
+                    <p>Add photos, location, price, and guest capacity on the existing listing form.</p>
+                </div>
+            </li>
+            <li>
+                <span class="host-onboard-step-num">2</span>
+                <div>
+                    <h3>Receive booking requests</h3>
+                    <p>Guests check availability and send a request. Nothing is confirmed until you respond.</p>
+                </div>
+            </li>
+            <li>
+                <span class="host-onboard-step-num">3</span>
+                <div>
+                    <h3>Manage your stays</h3>
+                    <p>Accept or reject requests and keep track of upcoming guests from Hosting requests.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="host-onboard-panel host-onboard-form-panel mb-5" aria-labelledby="host-details-heading">
+        <p class="host-onboard-kicker">Almost there</p>
+        <h2 id="host-details-heading">Host details</h2>
+        <p class="host-onboard-form-intro">Tell us a little about yourself so guests can feel confident knowing who they are booking with.</p>
+
+        <form method="POST" action="/become-a-host" class="needs-validation host-onboard-form" novalidate>
+            <div class="mb-3">
+                <label for="hostFullName" class="form-label booking-field-label">Full name</label>
+                <input type="text" name="host[fullName]" id="hostFullName" class="form-control booking-date-input" minlength="2" maxlength="80" required autocomplete="name">
+                <div class="invalid-feedback">Please enter your full name.</div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="hostPhone" class="form-label booking-field-label">Phone number</label>
+                    <input type="tel" name="host[phone]" id="hostPhone" class="form-control booking-date-input" pattern="[0-9+\-\s()]{8,20}" required autocomplete="tel">
+                    <div class="invalid-feedback">Enter a valid phone number.</div>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="hostCity" class="form-label booking-field-label">City / location</label>
+                    <input type="text" name="host[city]" id="hostCity" class="form-control booking-date-input" minlength="2" maxlength="100" required autocomplete="address-level2">
+                    <div class="invalid-feedback">Please enter your city or location.</div>
+                </div>
+            </div>
+
+            <fieldset class="mb-4">
+                <legend class="booking-field-label mb-2">What do you plan to host?</legend>
+                <div class="host-property-options">
+                    <label class="host-property-option">
+                        <input type="radio" name="host[propertyType]" value="entire_place" required>
+                        <span>
+                            <strong>Entire place</strong>
+                            <small>Guests have the whole space to themselves.</small>
+                        </span>
+                    </label>
+                    <label class="host-property-option">
+                        <input type="radio" name="host[propertyType]" value="private_room">
+                        <span>
+                            <strong>Private room</strong>
+                            <small>A private bedroom with shared common areas.</small>
+                        </span>
+                    </label>
+                    <label class="host-property-option">
+                        <input type="radio" name="host[propertyType]" value="shared_room">
+                        <span>
+                            <strong>Shared room</strong>
+                            <small>Guests share a room or space with others.</small>
+                        </span>
+                    </label>
+                    <label class="host-property-option">
+                        <input type="radio" name="host[propertyType]" value="other">
+                        <span>
+                            <strong>Other</strong>
+                            <small>A unique stay that does not fit the options above.</small>
+                        </span>
+                    </label>
+                </div>
+                <div class="invalid-feedback">Please choose a hosting type.</div>
+            </fieldset>
+
+            <div class="host-terms-box mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="host[termsAccepted]" id="hostTermsAccepted" value="true" required>
+                    <label class="form-check-label" for="hostTermsAccepted">
+                        I agree to the host terms and will keep my listing information accurate, respond to booking requests in good faith, and follow the Wanderlust community guidelines.
+                    </label>
+                    <div class="invalid-feedback">Please accept the host terms to continue.</div>
+                </div>
+            </div>
+
+            <button type="submit" class="booking-submit-button">Continue Hosting</button>
+        </form>
+    </section>
+</main>

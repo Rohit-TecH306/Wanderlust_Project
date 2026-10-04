@@ -1478,7 +1478,208 @@ body {
     border: 1px solid #e2e8f0;
 }
 
+/* Become a Host onboarding */
+.host-onboard-page {
+    max-width: 52rem;
+    margin: 0 auto 2rem;
+    padding: 1.25rem 0 2rem;
+}
+
+.host-onboard-hero {
+    margin-bottom: 1.5rem;
+}
+
+.host-onboard-kicker {
+    margin: 0 0 0.35rem;
+    color: #fe424d;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.host-onboard-hero h1,
+.host-onboard-panel h2 {
+    margin: 0 0 0.6rem;
+    color: #172033;
+    font-weight: 700;
+}
+
+.host-onboard-hero h1 {
+    font-size: 2.15rem;
+}
+
+.host-onboard-panel h2 {
+    font-size: 1.35rem;
+}
+
+.host-onboard-lead,
+.host-onboard-form-intro {
+    margin: 0;
+    color: #667085;
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.host-onboard-panel {
+    padding: 1.35rem;
+    border: 1px solid #e6e9ef;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 0.75rem 1.75rem rgba(23, 32, 51, 0.07);
+}
+
+.host-onboard-benefits {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.host-onboard-benefit {
+    padding: 1rem;
+    border: 1px solid #edf0f4;
+    border-radius: 0.85rem;
+    background: #fafbfc;
+}
+
+.host-onboard-benefit i {
+    color: #fe424d;
+    font-size: 1.15rem;
+    margin-bottom: 0.45rem;
+}
+
+.host-onboard-benefit h3 {
+    margin: 0 0 0.35rem;
+    color: #172033;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.host-onboard-benefit p {
+    margin: 0;
+    color: #667085;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.host-onboard-steps {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.host-onboard-steps li {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+}
+
+.host-onboard-step-num {
+    flex: 0 0 2.1rem;
+    width: 2.1rem;
+    height: 2.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #fe424d;
+    color: #fff;
+    font-weight: 800;
+}
+
+.host-onboard-steps h3 {
+    margin: 0 0 0.2rem;
+    font-size: 1.05rem;
+    color: #172033;
+}
+
+.host-onboard-steps p {
+    margin: 0;
+    color: #667085;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.host-onboard-form-panel {
+    padding-bottom: 1.6rem;
+}
+
+.host-onboard-form-intro {
+    margin-bottom: 1.15rem;
+}
+
+.host-property-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.host-property-option {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid #dfe3ea;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    background: #fff;
+}
+
+.host-property-option:hover,
+.host-property-option:has(input:checked) {
+    border-color: #fe424d;
+    box-shadow: 0 0 0 0.15rem rgba(254, 66, 77, 0.12);
+}
+
+.host-property-option input {
+    margin-top: 0.2rem;
+}
+
+.host-property-option strong {
+    display: block;
+    color: #172033;
+    font-size: 0.95rem;
+}
+
+.host-property-option small {
+    display: block;
+    color: #667085;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.host-terms-box {
+    padding: 0.95rem 1rem;
+    border-left: 3px solid #fe424d;
+    background: #fff7f7;
+    border-radius: 0 0.65rem 0.65rem 0;
+}
+
+.host-terms-box .form-check-label {
+    color: #475467;
+    font-size: 0.92rem;
+    line-height: 1.55;
+}
+
 @media (max-width: 768px) {
+    .host-onboard-hero h1 {
+        font-size: 1.7rem;
+    }
+
+    .host-onboard-benefits,
+    .host-property-options {
+        grid-template-columns: 1fr;
+    }
+
+    .host-onboard-panel {
+        padding: 1.1rem;
+    }
+
     .listing-show-title {
         font-size: 1.65rem;
     }
