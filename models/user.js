@@ -7,6 +7,33 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  hostOnboardingCompleted: {
+    type: Boolean,
+    default: false,
+  },
+  hostFullName: {
+    type: String,
+    trim: true,
+  },
+  hostPhone: {
+    type: String,
+    trim: true,
+  },
+  hostCity: {
+    type: String,
+    trim: true,
+  },
+  hostPropertyType: {
+    type: String,
+    enum: ["entire_place", "private_room", "shared_room", "other"],
+  },
+  hostTermsAccepted: {
+    type: Boolean,
+    default: false,
+  },
+  hostTermsAcceptedAt: {
+    type: Date,
+  },
 });
 
 // passport-local-mongoose automatically adds username, hash, and salt fields.

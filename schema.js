@@ -38,3 +38,15 @@ module.exports.bookingStatusSchema = Joi.object({
         status: Joi.string().valid("confirmed", "rejected").required()
     }).required().unknown(false)
 }).required().unknown(false);
+
+module.exports.hostOnboardingSchema = Joi.object({
+    host: Joi.object({
+        fullName: Joi.string().trim().min(2).max(80).required(),
+        phone: Joi.string().trim().pattern(/^[0-9+\-\s()]{8,20}$/).required()
+            .messages({ "string.pattern.base": "Enter a valid phone number." }),
+        city: Joi.string().trim().min(2).max(100).required(),
+        propertyType: Joi.string().valid("entire_place", "private_room", "shared_room", "other").required(),
+        termsAccepted: Joi.boolean().truthy("true", "on").valid(true).required()
+            .messages({ "any.only": "Please accept the host terms to continue." })
+    }).required().unknown(false)
+}).required().unknown(false);
