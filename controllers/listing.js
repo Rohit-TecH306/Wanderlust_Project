@@ -16,6 +16,10 @@ const getCachedListingData = (key) => {
     return cachedValue.data;
 };
 
+module.exports.clearListingCache = (key) => {
+    listingCache.delete(key);
+};
+
 module.exports.index = async (req, res) => {
     const { q, category } = req.query;
     const cacheKey = `listings:${JSON.stringify({ q: q || "", category: category || "" })}`;
