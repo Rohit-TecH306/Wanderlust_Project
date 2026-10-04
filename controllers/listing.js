@@ -1,7 +1,7 @@
 const Listing = require("../models/listing.js");
 
 const LISTING_CACHE_TTL = 120000;
-const listingCache = new Map();
+const tlistingCache = new Map();
 
 const getCachedListingData = (key) => {
     const cachedValue = listingCache.get(key);
