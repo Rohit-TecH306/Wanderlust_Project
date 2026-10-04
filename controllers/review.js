@@ -1,7 +1,6 @@
 const Listing = require("../models/listing.js");
 const Review = require("../models/review.js");
 const ExpressError = require("../utils/ExpressError.js");
-const { clearListingCache } = require("./listing.js");
 
 module.exports.createReview = async (req, res) => {
     let listing = await Listing.findById(req.params.id);
@@ -13,9 +12,6 @@ module.exports.createReview = async (req, res) => {
     listing.reviews.push(newReview);
     await newReview.save();
     await listing.save();
-    
-    // Invalidate the cache for this listing so the new review appears
-    clearListingCache(`listing:${req.params.id}`);
 
     req.flash("success", "New Review Added!");
     res.redirect(`/listings/${req.params.id}`);
@@ -29,9 +25,6 @@ module.exports.destroyReview = async (req, res) => {
         }
         await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
         await Review.findByIdAndDelete(reviewId);
-        
-        // Invalidate the cache for this listing so the deleted review disappears
-        clearListingCache(`listing:${id}`);
 
         req.flash("success", "Review Deleted!");
         res.redirect(`/listings/${id}`);

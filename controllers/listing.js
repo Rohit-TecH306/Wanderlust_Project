@@ -1,38 +1,7 @@
 const Listing = require("../models/listing.js");
 
-const LISTING_CACHE_TTL = 120000;
-const tlistingCache = new Map();
-
-const getCachedListingData = (key) => {
-    const cachedValue = listingCache.get(key);
-    if (!cachedValue) return null;
-
-    const isFresh = Date.now() - cachedValue.timestamp < LISTING_CACHE_TTL;
-    if (!isFresh) {
-        listingCache.delete(key);
-        return null;
-    }
-
-    return cachedValue.data;
-};
-
-module.exports.clearListingCache = (key) => {
-    listingCache.delete(key);
-};
-
 module.exports.index = async (req, res) => {
     const { q, category } = req.query;
-    const cacheKey = `listings:${JSON.stringify({ q: q || "", category: category || "" })}`;
-    const cachedData = getCachedListingData(cacheKey);
-
-    if (cachedData) {
-        return res.render("listings/index.ejs", {
-            allListings: cachedData,
-            q: q || "",
-            selectedCategory: category || ""
-        });
-    }
-
     const filters = {};
 
     if (q && q.trim()) {
@@ -46,11 +15,6 @@ module.exports.index = async (req, res) => {
     const allListings = await Listing.find(filters)
         .select("title price image location country category")
         .lean();
-
-    listingCache.set(cacheKey, {
-        data: allListings,
-        timestamp: Date.now(),
-    });
 
     res.render("listings/index.ejs", { allListings, q: q || "", selectedCategory: category || "" });
 }
@@ -105,13 +69,6 @@ module.exports.createListing = async (req, res, next) => {
 
 module.exports.showListing = async (req, res) => {
     let { id } = req.params;
-    const cacheKey = `listing:${id}`;
-    const cachedListing = getCachedListingData(cacheKey);
-
-    if (cachedListing) {
-        return res.render("listings/show.ejs", { listing: cachedListing });
-    }
-
     let listing = await Listing.findById(id)
         .populate({
             path: "reviews",
@@ -131,11 +88,6 @@ module.exports.showListing = async (req, res) => {
         req.flash("error", "Listing you requested for does not exist !");
         return res.redirect("/listings");
     }
-
-    listingCache.set(cacheKey, {
-        data: listing,
-        timestamp: Date.now(),
-    });
 
     res.render("listings/show.ejs", { listing });
 }
