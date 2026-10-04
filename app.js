@@ -23,8 +23,10 @@ const reviewsRouter = require("./routes/review.js");
 const bookingsRouter = require("./routes/booking.js");
 const userBookingsRouter = require("./routes/userBooking.js");
 const hostBookingsRouter = require("./routes/hostBooking.js");
+const hostOnboardingRouter = require("./routes/hostOnboarding.js");
 const userRouter = require("./routes/user.js");
 const listingController = require("./controllers/listing.js");
+const { userIsHost } = require("./middleware.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
@@ -107,12 +109,13 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());   //User Info adding in the session
 passport.deserializeUser(User.deserializeUser());  // User Info removing from the session
 
-app.use((req, res, next) => {
+app.use(wrapAsync(async (req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currentUser = req.user;
+    res.locals.isHost = await userIsHost(req.user);
     next();
-});
+}));
 
 // app.get("/demouser", async (req, res) => {
 //     let fakeUser = new User({
@@ -128,6 +131,7 @@ app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/listings/:id/bookings", bookingsRouter);
 app.use("/bookings", userBookingsRouter);
 app.use("/host/bookings", hostBookingsRouter);
+app.use("/", hostOnboardingRouter);
 app.use("/", userRouter);
 app.get("/", wrapAsync(listingController.index));
 
