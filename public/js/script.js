@@ -77,3 +77,24 @@ if (
     });
 }
 
+document.addEventListener("click", function (event) {
+    const toggleBtn = event.target.closest("[data-toggle-password]");
+    if (!toggleBtn) return;
+
+    const targetSelector = toggleBtn.getAttribute("data-toggle-password");
+    const passwordInput = document.querySelector(targetSelector);
+    if (!passwordInput) return;
+
+    const isPassword = passwordInput.getAttribute("type") === "password";
+    passwordInput.setAttribute("type", isPassword ? "text" : "password");
+
+    const icon = toggleBtn.querySelector("i");
+    if (icon) {
+        icon.classList.toggle("fa-eye", !isPassword);
+        icon.classList.toggle("fa-eye-slash", isPassword);
+    }
+
+    toggleBtn.setAttribute("aria-label", isPassword ? "Hide password" : "Show password");
+});
+
+

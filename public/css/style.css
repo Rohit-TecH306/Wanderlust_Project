@@ -1807,3 +1807,43 @@ body {
         margin: 1.75rem auto;
     }
 }
+
+/* Professional Password Field Toggle Button */
+.password-field-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-field-container .form-control {
+    padding-right: 2.75rem;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 0.5rem;
+    background: transparent;
+    border: none;
+    color: #6c757d;
+    padding: 0.35rem 0.55rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    z-index: 5;
+}
+
+.password-toggle-btn:hover {
+    color: #222222;
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.password-toggle-btn:focus-visible {
+    outline: 2px solid #fe424d;
+    outline-offset: 1px;
+}
+
