@@ -68,9 +68,61 @@
                     <span class="badge booking-status-badge booking-status-<%= booking.status %>"><i class="fa-solid <%= statusIcon %>" aria-hidden="true"></i><%= statusLabel %></span>
                 </section>
                 <% if (["pending", "confirmed"].includes(booking.status) && booking.checkIn > startOfTodayUtc) { %>
-                    <form action="/bookings/<%= booking._id %>/cancel?_method=PATCH" method="POST" class="booking-action-form" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                        <button class="btn booking-cancel-button w-100"><i class="fa-solid fa-ban" aria-hidden="true"></i>Cancel booking</button>
-                    </form>
+                    
+                   
+<form action="/bookings/<%= booking._id %>/cancel?_method=PATCH"
+      method="POST"
+      class="booking-action-form"
+      id="cancelBookingForm">
+
+    <button type="button"
+            class="btn booking-cancel-button w-100"
+            data-bs-toggle="modal"
+            data-bs-target="#cancelBookingModal">
+        <i class="fa-solid fa-ban" aria-hidden="true"></i>
+        Cancel booking
+    </button>
+</form>
+
+<div class="modal fade" id="cancelBookingModal" tabindex="-1"
+     aria-labelledby="cancelBookingModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog booking-cancel-dialog">
+        <div class="modal-content booking-cancel-modal">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelBookingModalLabel">
+                    <i class="fa-solid fa-circle-exclamation"
+                       aria-hidden="true"></i>
+                    Cancel this booking?
+                </h5>
+
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to cancel this booking?
+                This action cannot be undone.
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light"
+                        data-bs-dismiss="modal">
+                    Keep booking
+                </button>
+
+                <button type="button" class="btn booking-confirm-cancel"
+                        id="confirmCancelBooking">
+                    Yes, cancel booking
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
                 <% } %>
             </div>
         </article>

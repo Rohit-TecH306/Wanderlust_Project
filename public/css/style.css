@@ -1217,19 +1217,116 @@ body {
     color: #fff;
 }
 
-.booking-cancel-button {
-    display: inline-flex;
+
+
+.btn.booking-cancel-button {
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    padding: 0.75rem 1rem;
     border: 1px solid #e45454;
-    color: #c53d3d;
+    border-radius: 0.65rem;
+    background: #fff0f0;
+    color: #b42323;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
 }
 
-.booking-cancel-button:hover {
-    background: #fff0f0;
-    border-color: #c53d3d;
-    color: #a52f2f;
+.btn.booking-cancel-button:hover {
+    background: #c93636;
+    border-color: #c93636;
+    color: #fff;
+}
+
+.btn.booking-cancel-button:focus-visible {
+    outline: 3px solid rgba(201, 54, 54, 0.25);
+    outline-offset: 2px;
+}
+
+.btn.booking-cancel-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+
+/* StayFinder booking cancellation confirmation modal */
+.booking-cancel-modal {
+    border: 1px solid #f0d5d5;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 1rem 3rem rgba(23, 32, 51, 0.2);
+}
+
+.booking-cancel-modal .modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f0e4e4;
+}
+
+.booking-cancel-modal .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: #b42323;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.booking-cancel-modal .modal-body {
+    padding: 1.5rem;
+    color: #475467;
+    line-height: 1.6;
+}
+
+.booking-cancel-modal .modal-footer {
+    gap: 0.5rem;
+    padding: 1rem 1.5rem 1.25rem;
+    border-top: 1px solid #f0e4e4;
+}
+.modal .modal-footer .btn.booking-confirm-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 1.2rem;
+    min-height: 44px;
+    border: 1px solid #c93636;
+    border-radius: 0.6rem;
+    background-color: #c93636;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.modal .modal-footer .btn.booking-confirm-cancel:hover {
+    background-color: #a92727;
+    border-color: #a92727;
+    color: #ffffff;
+}
+
+.modal .modal-footer .btn.booking-confirm-cancel:focus-visible {
+    outline: 3px solid rgba(201, 54, 54, 0.3);
+    outline-offset: 2px;
+}
+
+.booking-cancel-dialog {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
+
+@media (min-width: 576px) {
+    .booking-cancel-dialog {
+        min-height: calc(100% - 3.5rem);
+    }
 }
 
 .booking-empty-state {
@@ -1695,5 +1792,18 @@ body {
     .review-form-card,
     .listing-map-card {
         padding: 1.1rem;
+    }
+}
+
+
+#cancelBookingModal .modal-dialog {
+    width: calc(100% - 2rem);
+    max-width: 620px;
+    margin: 1rem auto;
+}
+
+@media (min-width: 576px) {
+    #cancelBookingModal .modal-dialog {
+        margin: 1.75rem auto;
     }
 }

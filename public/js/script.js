@@ -47,3 +47,33 @@ if (mapElement) {
       .openPopup();
   }
 }
+
+
+const cancelBookingForm = document.querySelector("#cancelBookingForm");
+const cancelBookingModalElement = document.querySelector("#cancelBookingModal");
+const confirmCancelBookingButton = document.querySelector("#confirmCancelBooking");
+
+if (
+    cancelBookingForm &&
+    cancelBookingModalElement &&
+    confirmCancelBookingButton
+) {
+    const cancelBookingModal = bootstrap.Modal.getOrCreateInstance(
+        cancelBookingModalElement
+    );
+
+    let cancellationConfirmed = false;
+
+    cancelBookingForm.addEventListener("submit", function (event) {
+        if (!cancellationConfirmed) {
+            event.preventDefault();
+            cancelBookingModal.show();
+        }
+    });
+
+    confirmCancelBookingButton.addEventListener("click", function () {
+        cancellationConfirmed = true;
+        cancelBookingForm.requestSubmit();
+    });
+}
+
