@@ -43,6 +43,8 @@ app.get("/health", (req, res) => {
     res.status(200).send("OK");
 });
 
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 const atlasurl = process.env.MONGODB_ATLAS_URL;
 const sessionSecret = process.env.SESSION_SECRET || process.env.SECRET;
 const port = process.env.PORT || 8080;
@@ -99,6 +101,22 @@ const sessionOption = {
 
 app.use(session(sessionOption));
 app.use(flash());
+
+app.use((req, res, next) => {
+    const originalRedirect = res.redirect.bind(res);
+    res.redirect = function (...args) {
+        if (req.session) {
+            return req.session.save((err) => {
+                if (err) {
+                    console.error("Session save error on redirect:", err);
+                }
+                originalRedirect(...args);
+            });
+        }
+        originalRedirect(...args);
+    };
+    next();
+});
 
 app.use(passport.initialize());
 app.use(passport.session());
