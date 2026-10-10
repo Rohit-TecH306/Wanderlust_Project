@@ -7,7 +7,11 @@
 
 <% if (error && error.length > 0) { %>
     <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
-        <%= error[0] %>
+        <% if (error[0] === "An account with this username or email already exists. Please log in.") { %>
+            An account with this username or email already exists. <a href="/login" class="alert-link">Please log in.</a>
+        <% } else { %>
+            <%= error[0] %>
+        <% } %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 <% } %>
